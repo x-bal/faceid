@@ -28,7 +28,12 @@
     <div id="app" class="app app-header-fixed app-sidebar-fixed">
         <div id="header" class="app-header">
             <div class="navbar-header">
-                <a href="index.html" class="navbar-brand"><span class="navbar-logo"><i class="ion-ios-browsers"></i></span> <b class="me-1">{{ config('app.name') }}</b></a>
+                <a href="/" class="navbar-brand">
+                    <span class="navbar-logo">
+                        <img src="{{ asset('img/logo/kalbe.png') }}" width="20" alt="kalbe logo">
+                    </span>
+                    <b class="me-1">Kalbe</b> <span style="color: #83bb43">Morinaga</span></a>
+                </a>
                 <button type="button" class="navbar-mobile-toggler" data-toggle="app-sidebar-mobile">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -37,6 +42,7 @@
             </div>
 
             <div class="navbar-nav">
+                @auth
                 <div class="navbar-item navbar-user dropdown">
                     <a href="#" class="navbar-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
                         <img src="{{ asset('/') }}img/user/user-13.jpg" alt="" />
@@ -46,11 +52,6 @@
                         </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end me-1">
-                        <a href="javascript:;" class="dropdown-item">Edit Profile</a>
-                        <a href="javascript:;" class="dropdown-item"><span class="badge bg-danger float-end rounded-pill">2</span> Inbox</a>
-                        <a href="javascript:;" class="dropdown-item">Calendar</a>
-                        <a href="javascript:;" class="dropdown-item">Setting</a>
-                        <div class="dropdown-divider"></div>
                         <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item">Log Out</a>
                     </div>
 
@@ -58,78 +59,58 @@
                         @csrf
                     </form>
                 </div>
+                @else
+                <div class="navbar-item navbar-user">
+                    <a href="#modal-dialog" class="btn btn-success" data-bs-toggle="modal"><i class="fas fa-sign-in-alt"></i> Login</a>
+                </div>
+                @endauth
             </div>
         </div>
 
         <div id="sidebar" class="app-sidebar">
             <div class="app-sidebar-content" data-scrollbar="true" data-height="100%">
                 <div class="menu">
-                    <div class="menu-profile">
-                        <a href="javascript:;" class="menu-profile-link" data-toggle="app-sidebar-profile" data-target="#appSidebarProfileMenu">
-                            <div class="menu-profile-cover with-shadow"></div>
-                            <div class="menu-profile-image">
-                                <img src="{{ asset('/') }}img/user/user-13.jpg" alt="" />
-                            </div>
-                            <div class="menu-profile-info">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-grow-1">
-                                        {{ auth()->user()->name }}
-                                    </div>
-                                    <div class="menu-caret ms-auto"></div>
-                                </div>
-                                <small>Front end developer</small>
-                            </div>
-                        </a>
-                    </div>
                     <div id="appSidebarProfileMenu" class="collapse">
-                        <div class="menu-item pt-5px">
-                            <a href="javascript:;" class="menu-link">
-                                <div class="menu-icon"><i class="fa fa-cog"></i></div>
-                                <div class="menu-text">Settings</div>
-                            </a>
-                        </div>
-                        <div class="menu-item">
-                            <a href="javascript:;" class="menu-link">
-                                <div class="menu-icon"><i class="fa fa-pencil-alt"></i></div>
-                                <div class="menu-text"> Send Feedback</div>
-                            </a>
-                        </div>
-                        <div class="menu-item pb-5px">
-                            <a href="javascript:;" class="menu-link">
-                                <div class="menu-icon"><i class="fa fa-question-circle"></i></div>
-                                <div class="menu-text"> Helps</div>
-                            </a>
-                        </div>
-                        <div class="menu-divider m-0"></div>
                     </div>
 
                     <div class="menu-header">Navigation</div>
-                    <div class="menu-item has-sub active">
-                        <a href="javascript:;" class="menu-link">
+                    @auth
+                    <div class="menu-item {{ request()->is('dashboard*') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard') }}" class="menu-link">
                             <div class="menu-icon">
-                                <i class="ion-ios-pulse"></i>
+                                <i class="fas fa-home bg-blue"></i>
                             </div>
-                            <div class="menu-text">Data Master</div>
-                            <div class="menu-caret"></div>
-                        </a>
-                        <div class="menu-submenu">
-                            <div class="menu-item">
-                                <a href="{{ route('users.index') }}" class="menu-link">
-                                    <div class="menu-text">Data User</div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="menu-item">
-                        <a href="widget.html" class="menu-link">
-                            <div class="menu-icon">
-                                <i class="ion-ios-nutrition bg-blue"></i>
-                            </div>
-                            <div class="menu-text">Widgets <span class="menu-label">NEW</span></div>
+                            <div class="menu-text">Dashboard</div>
                         </a>
                     </div>
 
+                    <div class="menu-item {{ request()->is('devices*') ? 'active' : '' }}">
+                        <a href="{{ route('devices.index') }}" class="menu-link">
+                            <div class="menu-icon">
+                                <i class="fas fa-tablet bg-indigo"></i>
+                            </div>
+                            <div class="menu-text">Device</div>
+                        </a>
+                    </div>
+
+                    <div class="menu-item {{ request()->is('karyawan*') ? 'active' : '' }}">
+                        <a href="{{ route('karyawan.index') }}" class="menu-link">
+                            <div class="menu-icon">
+                                <i class="fas fa-users bg-warning"></i>
+                            </div>
+                            <div class="menu-text">Karyawan</div>
+                        </a>
+                    </div>
+
+                    <div class="menu-item {{ request()->is('logs*') ? 'active' : '' }}">
+                        <a href="{{ route('logs.index') }}" class="menu-link">
+                            <div class="menu-icon">
+                                <i class="fas fa-clock bg-secondary"></i>
+                            </div>
+                            <div class="menu-text">Logs</div>
+                        </a>
+                    </div>
+                    @endauth
                     <div class="menu-item d-flex">
                         <a href="javascript:;" class="app-sidebar-minify-btn ms-auto" data-toggle="app-sidebar-minify"><i class="ion-ios-arrow-back"></i>
                             <div class="menu-text">Collapse</div>
@@ -143,11 +124,13 @@
 
         <div id="content" class="app-content">
 
+            @auth
             <ol class="breadcrumb float-xl-end">
                 @foreach($breadcrumbs as $breadcrumb)
                 <li class="breadcrumb-item"><a href="javascript:;">{{ $breadcrumb }}</a></li>
                 @endforeach
             </ol>
+            @endauth
 
             <h1 class="page-header">{{ $title }}</h1>
 
@@ -157,6 +140,45 @@
 
         <a href="javascript:;" class="btn btn-icon btn-circle btn-primary btn-scroll-to-top" data-toggle="scroll-to-top"><i class="fa fa-angle-up"></i></a>
     </div>
+
+    @guest
+    <div class="modal fade" id="modal-dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Login</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <form action="{{ route('login') }}" method="post">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group mb-3">
+                            <label for="username">Username or Email</label>
+                            <input type="text" name="username" id="username" class="form-control" placeholder="Username or Email">
+
+                            @error('username')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" name="password" id="password" class="form-control" placeholder="Password">
+
+                            @error('password')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="javascript:;" class="btn btn-white" data-bs-dismiss="modal">Close</a>
+                        <button type="submit" class="btn btn-success">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endguest
 
     <!-- ================== BEGIN core-js ================== -->
     <script src="{{ asset('/') }}js/vendor.min.js"></script>
