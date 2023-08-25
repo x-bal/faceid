@@ -33,13 +33,15 @@ class KaryawanController extends Controller
             $data = [];
 
             foreach ($users as $key => $user) {
-                $data[] = [
-                    'txtName' => $user->txtnamauser,
-                    'foto' => $karyawan[$key]->foto,
-                    'id' => $karyawan[$key]->id,
-                    'is_export' => $karyawan[$key]->is_export,
-                    'is_edit' => $karyawan[$key]->is_edit,
-                ];
+                if($user->intiduser == $userid[$key]){
+                    $data[] = [
+                        'txtName' => $user->txtnamauser,
+                        'foto' => $karyawan[$key]->foto,
+                        'id' => $karyawan[$key]->id,
+                        'is_export' => $karyawan[$key]->is_export,
+                        'is_edit' => $karyawan[$key]->is_edit,
+                    ];
+                }
             }
 
             return DataTables::of($data)
