@@ -27,7 +27,7 @@ class KaryawanController extends Controller
     {
         if ($request->ajax()) {
             $userid = Karyawan::pluck('user_id');
-            $users = DB::connection('kmi_server')->table('musers')->whereIn('intiduser', $userid)->get();
+            $users = DB::connection('kmi_server')->table('musers')->whereIn('intiduser', $userid)->orderBy('txtnamauser', 'ASC')->get();
             $karyawan = Karyawan::get();
 
             $data = [];
