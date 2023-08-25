@@ -138,8 +138,8 @@
                 name: 'txtName'
             },
             {
-                data: 'created',
-                name: 'created'
+                data: 'created_at',
+                name: 'created_at'
             },
             {
                 data: 'action',
