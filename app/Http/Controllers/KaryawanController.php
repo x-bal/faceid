@@ -39,6 +39,7 @@ class KaryawanController extends Controller
                     'id' => Karyawan::where('user_id', $user->intiduser)->first()->id,
                     'is_export' => Karyawan::where('user_id', $user->intiduser)->first()->is_export,
                     'is_edit' => Karyawan::where('user_id', $user->intiduser)->first()->is_edit,
+                    'created_at' => Karyawan::where('user_id', $user->intiduser)->first()->created_at
                 ];
             }
 
@@ -76,9 +77,9 @@ class KaryawanController extends Controller
                     <img src="' . asset('/storage/' . $row['foto']) . '" alt="User Photo" width="50">
                 </div>';
                 })
-                // ->editColumn('created_at', function ($row) {
-                //     return Carbon::parse($row->created_at)->format('d/m/Y H:i:s');
-                // })
+                ->editColumn('created_at', function ($row) {
+                    return Carbon::parse($row['created_at'])->format('d/m/Y H:i:s');
+                })
                 ->rawColumns(['action', 'foto', 'checkbox'])
                 ->make(true);
         }
