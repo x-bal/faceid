@@ -28,7 +28,7 @@ class ApiController extends Controller
 
             $setting = Setting::find(1);
 
-            if ($request->beard == 0 && $request->moustache == 0 && $request->suhu < $setting->limit) {
+            if ($request->beard == 0 && $request->moustache == 0 && floatval($request->suhu) < floatval($setting->val)) {
                 $status = "Healthy";
             } else {
                 $status = "Not Healthy";

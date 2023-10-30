@@ -41,10 +41,10 @@ class LoginController extends Controller
                         ->orWhere('txtemail', 'like', '%' . $username . '%');
                 })->first();
 
-                if (Auth::attempt(['username' => $user->txtusername, 'password' => $request->password])) {
-                    return redirect()->route('dashboard')->with('success', "Login berhasil");
+                if (Auth::attempt(['txtusername' => $user->txtusername, 'txtpassword' => $request->password])) {
+                    return redirect()->route('dashboard')->with('success', 'Login berhasil.');
                 } else {
-                    return back()->with('error', "Username atau Password salah");
+                    return back()->with('error', 'Login gagal, periksa kembali username atau password anda.');
                 }
             }
 
