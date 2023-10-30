@@ -27,7 +27,7 @@ class KaryawanController extends Controller
     {
         if ($request->ajax()) {
             $userid = Karyawan::pluck('user_id');
-            $users = DB::connection('kmi_server')->table('musers')->whereIn('intiduser', $userid)->get();
+            $users = DB::connection('kmi_server')->table('musers')->whereIn('intiduser', $userid)->orderBy('txtnamauser', 'ASC')->get();
             $karyawan = Karyawan::get();
 
             $data = [];
@@ -35,10 +35,11 @@ class KaryawanController extends Controller
             foreach ($users as $key => $user) {
                 $data[] = [
                     'txtName' => $user->txtnamauser,
-                    'foto' => $karyawan[$key]->foto,
-                    'id' => $karyawan[$key]->id,
-                    'is_export' => $karyawan[$key]->is_export,
-                    'is_edit' => $karyawan[$key]->is_edit,
+                    'foto' => Karyawan::where('user_id', $user->intiduser)->first()->foto,
+                    'id' => Karyawan::where('user_id', $user->intiduser)->first()->id,
+                    'is_export' => Karyawan::where('user_id', $user->intiduser)->first()->is_export,
+                    'is_edit' => Karyawan::where('user_id', $user->intiduser)->first()->is_edit,
+                    'created_at' => Karyawan::where('user_id', $user->intiduser)->first()->created_at
                 ];
             }
 
@@ -76,9 +77,9 @@ class KaryawanController extends Controller
                     <img src="' . asset('/storage/' . $row['foto']) . '" alt="User Photo" width="50">
                 </div>';
                 })
-                // ->editColumn('created_at', function ($row) {
-                //     return Carbon::parse($row->created_at)->format('d/m/Y H:i:s');
-                // })
+                ->editColumn('created_at', function ($row) {
+                    return Carbon::parse($row['created_at'])->format('d/m/Y H:i:s');
+                })
                 ->rawColumns(['action', 'foto', 'checkbox'])
                 ->make(true);
         }

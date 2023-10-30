@@ -48,6 +48,7 @@
                     <th class="text-nowrap">#</th>
                     <th class="text-nowrap">Foto</th>
                     <th class="text-nowrap">Name</th>
+                    <th class="text-nowrap">Created At</th>
                     <th class="text-nowrap">Action</th>
                 </tr>
             </thead>
@@ -135,6 +136,10 @@
             {
                 data: 'txtName',
                 name: 'txtName'
+            },
+            {
+                data: 'created_at',
+                name: 'created_at'
             },
             {
                 data: 'action',

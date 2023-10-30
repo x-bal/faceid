@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('auth.login');
-});
+})->middleware('guest')->name('home');
 
 Route::post('/login', LoginController::class)->name('login');
 
