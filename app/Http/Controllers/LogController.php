@@ -28,6 +28,7 @@ class LogController extends Controller
         if ($request->ajax()) {
 
             $data = [];
+            $setting = Setting::find(1);
 
             if ($request->from || $request->to || $request->department) {
                 $to = Carbon::parse($request->to)->addDay(1)->format('Y-m-d');
@@ -43,6 +44,12 @@ class LogController extends Controller
                         })
                         ->first();
                     if ($user) {
+                        if ($log->beard == 0 && $log->moustache == 0 && floatval($log->suhu) < floatval($setting->val)) {
+                            $status = "Healthy";
+                        } else {
+                            $status = "Not Healthy";
+                        }
+
                         $data[] = [
                             'id' => $log->id,
                             'txtName' => $user->txtnamauser,
@@ -50,7 +57,7 @@ class LogController extends Controller
                             'moustache' => $log->moustache,
                             'suhu' => $log->suhu,
                             'foto' => $log->foto,
-                            'status' => $log->status,
+                            'status' => $status,
                             'waktu' => $log->waktu,
                             'department' => $user->txtnamadepartemen,
                             'txtNik' => $user->txtnik,
@@ -67,6 +74,12 @@ class LogController extends Controller
                         ->where('intiduser', $log->user_id)
                         ->first();
                     if ($user) {
+                        if ($log->beard == 0 && $log->moustache == 0 && floatval($log->suhu) < floatval($setting->val)) {
+                            $status = "Healthy";
+                        } else {
+                            $status = "Not Healthy";
+                        }
+
                         $data[] = [
                             'id' => $log->id,
                             'txtName' => $user->txtnamauser,
@@ -74,7 +87,7 @@ class LogController extends Controller
                             'moustache' => $log->moustache,
                             'suhu' => $log->suhu,
                             'foto' => $log->foto,
-                            'status' => $log->status,
+                            'status' => $status,
                             'waktu' => $log->waktu,
                             'department' => $user->txtnamadepartemen,
                             'txtNik' => $user->txtnik,
@@ -139,10 +152,18 @@ class LogController extends Controller
                     return '<span class="text-dark">' . Carbon::parse($row['waktu'])->format('d/m/Y H:i:s') . '</span>';
                 })
                 ->editColumn('status', function ($row) {
-                    if ($row['status'] == "Healthy") {
-                        $status = '<span class="badge bg-success">' . $row['status'] . '</span>';
+                    $setting = Setting::find(1);
+
+                    if ($row->beard == 0 && $row->moustache == 0 && floatval($row->suhu) < floatval($setting->val)) {
+                        $status = "Healthy";
                     } else {
-                        $status = '<span class="badge bg-danger">' . $row['status'] . '</span>';
+                        $status = "Not Healthy";
+                    }
+
+                    if ($status == "Healthy") {
+                        $status = '<span class="badge bg-success">' . $status . '</span>';
+                    } else {
+                        $status = '<span class="badge bg-danger">' . $status . '</span>';
                     }
 
                     return $status;
