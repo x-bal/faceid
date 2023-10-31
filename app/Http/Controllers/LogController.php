@@ -290,7 +290,7 @@ class LogController extends Controller
                         $beard = 'NOK';
                     }
 
-                    if ($log->suhu <= $setting->val) {
+                    if (floatval($log->suhu) <= floatval($setting->val)) {
                         $kondisi = 'OK';
                     } else {
                         $kondisi = 'NOK';
