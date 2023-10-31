@@ -154,7 +154,7 @@ class LogController extends Controller
                 ->editColumn('status', function ($row) {
                     $setting = Setting::find(1);
 
-                    if ($row->beard == 0 && $row->moustache == 0 && floatval($row->suhu) < floatval($setting->val)) {
+                    if ($row["beard"] == 0 && $row["moustache"] == 0 && floatval($row["suhu"]) < floatval($setting->val)) {
                         $status = "Healthy";
                     } else {
                         $status = "Not Healthy";
