@@ -192,12 +192,14 @@ class LogController extends Controller
     public function export(Request $request)
     {
         $data = [];
+        $setting = Setting::find(1);
 
         if ($request->from != null && $request->to != null || $request->department) {
             $to = Carbon::parse($request->to)->addDay(1)->format('Y-m-d');
             $department = $request->department;
 
             $logs = Log::whereBetween('waktu', [$request->from, $to])->get();
+
 
             foreach ($logs as $log) {
                 $user = DB::connection('kmi_server')->table('musers')
@@ -225,7 +227,7 @@ class LogController extends Controller
                         $beard = 'NOK';
                     }
 
-                    if ($log->status == 'Healthy') {
+                    if ($log->suhu <= $setting->val) {
                         $kondisi = 'OK';
                     } else {
                         $kondisi = 'NOK';
@@ -267,7 +269,7 @@ class LogController extends Controller
                         $beard = 'NOK';
                     }
 
-                    if ($log->status == 'Healthy') {
+                    if ($log->suhu <= $setting->val) {
                         $kondisi = 'OK';
                     } else {
                         $kondisi = 'NOK';
