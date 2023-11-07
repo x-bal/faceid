@@ -33,7 +33,7 @@ class LogController extends Controller
             if ($request->from || $request->to || $request->department) {
                 $to = Carbon::parse($request->to)->addDay(1)->format('Y-m-d');
                 $department = $request->department;
-                $logs = Log::whereBetween('waktu', [$request->from, $to])->get();
+                $logs = Log::whereBetween('waktu', [$request->from, $to])->orderBy('waktu', 'DESC')->get();
 
                 foreach ($logs as $log) {
                     $user = DB::connection('kmi_server')->table('musers')
