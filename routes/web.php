@@ -43,8 +43,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('karyawan/get', [KaryawanController::class, 'get'])->name('karyawan.get');
     Route::post('/karyawan/add-persons', [KaryawanController::class, 'addPersons'])->name('karyawan.addperson');
-    Route::post('/karyawan/update-persons', [KaryawanController::class, 'updatePerson'])->name('karyawan.updatePerson');
-    Route::post('/karyawan/delete-persons', [KaryawanController::class, 'deletePerson'])->name('karyawan.deletePerson');
+    Route::post('/karyawan/update-persons/{id}', [KaryawanController::class, 'updatePerson'])->name('karyawan.updatePerson');
+    Route::post('/karyawan/delete-persons/{id}', [KaryawanController::class, 'deletePerson'])->name('karyawan.deletePerson');
     Route::resource('karyawan', KaryawanController::class);
 
     Route::get('/logs/get', [LogController::class, 'get'])->name('logs.get');

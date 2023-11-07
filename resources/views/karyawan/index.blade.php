@@ -48,6 +48,7 @@
                     <th class="text-nowrap">#</th>
                     <th class="text-nowrap">Foto</th>
                     <th class="text-nowrap">Name</th>
+                    <th class="text-nowrap">Employee ID</th>
                     <th class="text-nowrap">Created At</th>
                     <th class="text-nowrap">Action</th>
                 </tr>
@@ -103,6 +104,16 @@
     @csrf
     @method('DELETE')
 </form>
+
+<form action="" class="d-none" id="form-delete-device" method="post">
+    @csrf
+    <input type="hidden" name="device" id="dev-id" value="">
+</form>
+
+<form action="" class="d-none" id="form-update-device" method="post">
+    @csrf
+    <input type="hidden" name="device" id="dev-id-update" value="">
+</form>
 @endsection
 
 @push('script')
@@ -117,6 +128,12 @@
     $("#karyawan").select2({
         dropdownParent: $('#modal-add')
     });
+
+    $(document).on("change", "#device", function() {
+        let device = $(this).val();
+        $("#dev-id").val(device)
+        $("#dev-id-update").val(device)
+    })
 
     var table = $('#datatable').DataTable({
         processing: true,
@@ -136,6 +153,10 @@
             {
                 data: 'txtName',
                 name: 'txtName'
+            },
+            {
+                data: 'employee_id',
+                name: 'employee_id'
             },
             {
                 data: 'created_at',
@@ -189,6 +210,74 @@
                 $("#form-delete").submit()
             } else {
                 $("#form-delete").attr('action', '')
+            }
+        });
+    })
+
+    $("#datatable").on('click', '.btn-del', function(e) {
+        e.preventDefault();
+        let route = $(this).attr('data-route')
+        $("#form-delete-device").attr('action', route)
+
+        swal({
+            title: 'Hapus foto karyawan dari device?',
+            text: 'Menghapus foto karyawan dari device bersifat permanen.',
+            icon: 'error',
+            buttons: {
+                cancel: {
+                    text: 'Cancel',
+                    value: null,
+                    visible: true,
+                    className: 'btn btn-default',
+                    closeModal: true,
+                },
+                confirm: {
+                    text: 'Yes',
+                    value: true,
+                    visible: true,
+                    className: 'btn btn-danger',
+                    closeModal: true
+                }
+            }
+        }).then((result) => {
+            if (result) {
+                $("#form-delete-device").submit()
+            } else {
+                $("#form-delete-device").attr('action', '')
+            }
+        });
+    })
+
+    $("#datatable").on('click', '.btn-update', function(e) {
+        e.preventDefault();
+        let route = $(this).attr('data-route')
+        $("#form-update-device").attr('action', route)
+
+        swal({
+            title: 'Update foto karyawan dari device?',
+            text: 'Mengupdate foto karyawan.',
+            icon: 'error',
+            buttons: {
+                cancel: {
+                    text: 'Cancel',
+                    value: null,
+                    visible: true,
+                    className: 'btn btn-default',
+                    closeModal: true,
+                },
+                confirm: {
+                    text: 'Yes',
+                    value: true,
+                    visible: true,
+                    className: 'btn btn-danger',
+                    closeModal: true
+                }
+            }
+        }).then((result) => {
+            if (result) {
+                $("#form-update-device").submit()
+            } else {
+                $("#form-update-device").attr('action', '')
             }
         });
     })

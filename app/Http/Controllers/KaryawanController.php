@@ -39,6 +39,7 @@ class KaryawanController extends Controller
                     'id' => Karyawan::where('user_id', $user->intiduser)->first()->id,
                     'is_export' => Karyawan::where('user_id', $user->intiduser)->first()->is_export,
                     'is_edit' => Karyawan::where('user_id', $user->intiduser)->first()->is_edit,
+                    'employee_id' => Karyawan::where('user_id', $user->intiduser)->first()->employee_id,
                     'created_at' => Karyawan::where('user_id', $user->intiduser)->first()->created_at
                 ];
             }
@@ -61,11 +62,11 @@ class KaryawanController extends Controller
                         <div class="dropdown-menu dropdown-menu-end">
                         <a href="' . route('karyawan.edit', $row['id']) . '" class="dropdown-item ">Edit</a>
                         <a data-route="' . route('karyawan.destroy', $row['id']) . '" class="dropdown-item btn-delete">Delete</a>';
-                    if ($row['is_edit'] == 1) {
-                        $actionBtn .= '<a href="' . route('karyawan.updatePerson', $row['id']) . '"  class="dropdown-item btn-update">Update To Device</a> ';
+                    if ($row['is_edit'] == 1 && $row['is_export'] == 1) {
+                        $actionBtn .= '<a href="' . route('karyawan.updatePerson', $row['id']) . '"  class="dropdown-item btn-update" data-route="' . route('karyawan.updatePerson', $row['id']) . '">Update To Device</a> ';
                     }
                     if ($row['is_export'] == 1) {
-                        $actionBtn .= '<a href="' . route('karyawan.deletePerson', $row['id']) . '"  class="dropdown-item btn-del">Delete From Device</a> ';
+                        $actionBtn .= '<a href="' . route('karyawan.deletePerson', $row['id']) . '"  class="dropdown-item btn-del" data-route="' . route('karyawan.deletePerson', $row['id']) . '">Delete From Device</a> ';
                     }
 
                     $actionBtn .= '</div>
@@ -103,7 +104,7 @@ class KaryawanController extends Controller
             $karyawan = Karyawan::create([
                 'user_id' => $request->karyawan,
                 'foto' => $fotoUrl,
-                'employee_id' => 23 . rand(100, 999)
+                'employee_id' => $karyawan->txtnik
             ]);
 
             DB::commit();
@@ -148,7 +149,8 @@ class KaryawanController extends Controller
 
             $karyawan->update([
                 'foto' => $fotoUrl,
-                'is_edit' => 1
+                'is_edit' => $karyawan->is_export == 1 ? 1 : 0,
+                'employee_id' => $user->txtnik
             ]);
 
             DB::commit();
@@ -215,6 +217,7 @@ class KaryawanController extends Controller
                     "Name" => $member->txtnamauser,
                     "CustomizeID" => intval($id),
                     "PersonUUID" => $id,
+                    "Notes" => $id,
                     "picinfo" => $gambar_format
                 ];
                 $newArray["Personinfo_$i"] = $personInfo;
@@ -306,7 +309,7 @@ class KaryawanController extends Controller
 
             return back()->with('success', "Foto karyawan berhasil diupdate");
         } else {
-            return back()->with('error', $result);
+            return back()->with('error', $result["info"]["Detail"]);
         }
     }
 
@@ -330,9 +333,10 @@ class KaryawanController extends Controller
             "operator" => "DeletePerson",
             "info" => array(
                 "DeviceID" => $deviceTarget,
+                "TotalNum" => 1,
                 "IdType" => 0,
-                "CustomizeID" => $karyawan->employee_id,
-                "PersonUUID" => $karyawan->employee_id,
+                "CustomizeID" => [$karyawan->employee_id],
+                "PersonUUID" => [$karyawan->employee_id],
             ),
         );
 
@@ -343,6 +347,7 @@ class KaryawanController extends Controller
             "Authorization: Basic " . base64_encode("admin:admin"),
             'Content-Type: application/x-www-form-urlencoded'
         );
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $ipDevice . '/action/DeletePerson');
         curl_setopt($ch, CURLOPT_POST, true);
@@ -355,10 +360,9 @@ class KaryawanController extends Controller
         if ($result['code'] == 200) {
             $karyawan->update(['is_export' => 0, 'is_edit' => 0]);
 
-
             return back()->with('success', "Foto karyawan berhasil diupdate");
         } else {
-            return back()->with('error', $result);
+            return back()->with('error', $result["info"]["Detail"]);
         }
     }
 }
