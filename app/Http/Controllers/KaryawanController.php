@@ -364,7 +364,7 @@ class KaryawanController extends Controller
         if ($result['code'] == 200) {
             $karyawan->update(['is_export' => 0, 'is_edit' => 0]);
 
-            return back()->with('success', "Foto karyawan berhasil diupdate");
+            return back()->with('success', "Foto karyawan berhasil didelete dari device");
         } else {
             return back()->with('error', $result["info"]["Detail"]);
         }
