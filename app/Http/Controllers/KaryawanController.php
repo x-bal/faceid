@@ -135,7 +135,7 @@ class KaryawanController extends Controller
     public function update(Request $request, Karyawan $karyawan)
     {
         $request->validate([
-            'foto' => 'required|mimes:jpg,jpeg,png'
+            'foto' => 'nullable|mimes:jpg,jpeg,png'
         ]);
 
         try {
@@ -143,9 +143,13 @@ class KaryawanController extends Controller
 
             $user = DB::connection('kmi_server')->table('musers')->where('intiduser', $karyawan->user_id)->first();
 
-            Storage::delete($karyawan->foto);
-            $foto = $request->file('foto');
-            $fotoUrl = $foto->storeAs('karyawan', $user->txtnik . '.' . $foto->extension());
+            if ($request->foto) {
+                Storage::delete($karyawan->foto);
+                $foto = $request->file('foto');
+                $fotoUrl = $foto->storeAs('karyawan', $user->txtnik . '.' . $foto->extension());
+            } else {
+                $fotoUrl = $karyawan->foto;
+            }
 
             $karyawan->update([
                 'foto' => $fotoUrl,
